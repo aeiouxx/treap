@@ -1,0 +1,11 @@
+[package]
+name = "treap"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = ["statistics"]
+statistics = []
+
+[dependencies]
+rand = "0.8"
