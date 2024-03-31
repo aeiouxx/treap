@@ -15,22 +15,19 @@ mod tests {
         }
         println!("Height: {}", treap.height());
     }
-
     #[test]
     fn benchmark() {
         let iterations = 10_000;
         let treap_elements = 1_023;
         let mut height_avg = 0;
-        for iter in 1..=iterations {
+        for _ in 1..=iterations {
             let mut treap = Treap::<i32, String>::new(0);
             for i in 1..=treap_elements {
                 treap.insert(i, i.to_string());
             }
             let height = treap.height();
             height_avg += height;
-            println!("{},h:{}", iter, height);
         }
-
         println!("Height average: {}", height_avg as f32 / iterations as f32);
     }
 }

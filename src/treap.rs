@@ -121,8 +121,7 @@ where
                             .as_ref()
                             .map_or(false, |left| left.priority < node.priority)
                         {
-                            let rotated = Self::rotate_right(node);
-                            node = rotated;
+                            node = Self::rotate_right(node);
                         }
                     }
                     Ordering::Equal => {
@@ -136,8 +135,7 @@ where
                             .as_ref()
                             .map_or(false, |right| right.priority < node.priority)
                         {
-                            let rotated = Self::rotate_left(node);
-                            node = rotated;
+                            node = Self::rotate_left(node);
                         }
                     }
                 }
