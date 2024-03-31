@@ -8,15 +8,29 @@ mod tests {
     #[test]
     fn first_test() {
         let mut treap = Treap::<i32, String, u8, u8>::new(0u8);
-        treap.insert(1, "one".to_string());
-        treap.insert(2, "two".to_string());
-        treap.insert(3, "three".to_string());
-        treap.insert(4, "four".to_string());
-        treap.insert(5, "five".to_string());
-        treap.insert(6, "six".to_string());
-        treap.insert(7, "seven".to_string());
-        treap.insert(8, "eight".to_string());
-        treap.insert(9, "nine".to_string());
-        treap.insert(10, "ten".to_string());
+        for i in 0..14 {
+            print!("Inserting: {}\n", i);
+            treap.insert(i, i.to_string());
+            treap.print();
+        }
+        println!("Height: {}", treap.height());
+    }
+
+    #[test]
+    fn benchmark() {
+        let iterations = 10_000;
+        let treap_elements = 1_023;
+        let mut height_avg = 0;
+        for iter in 1..=iterations {
+            let mut treap = Treap::<i32, String>::new(0);
+            for i in 1..=treap_elements {
+                treap.insert(i, i.to_string());
+            }
+            let height = treap.height();
+            height_avg += height;
+            println!("{},h:{}", iter, height);
+        }
+
+        println!("Height average: {}", height_avg as f32 / iterations as f32);
     }
 }

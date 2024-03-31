@@ -49,7 +49,7 @@ where
     V: Display,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "(`{}`,`{}`,`{}`)", self.key, self.value, self.priority)
+        write!(f, "({},{},{})", self.key, self.value, self.priority)
     }
 }
 // < Node
@@ -99,8 +99,6 @@ where
         let value_str = value.to_string();
         let prio_str = priority.to_string();
         self.root = Self::insert_impl(self.root.take(), key, value, priority);
-        println!("----Inserted: ({},{},{})", key_str, value_str, prio_str);
-        self.print();
     }
     // This is the actual recursive insert function. It returns the new root of the subtree.
     // Call stack unwinding will assure that the newly inserted node will be bubbled up if
@@ -224,34 +222,52 @@ where
     }
 
     pub fn print(&self) {
-        self.print_node(&self.root, 0, "", true);
+        self.print_node(
+            &self.root,
+            0,
+            "",
+            true,
+            self.root
+                .as_ref()
+                .map_or_else(|| false, |node| node.left.is_some()),
+        );
     }
 
-    fn print_node(&self, node: &OptNodePtr<K, V, P>, depth: usize, prefix: &str, is_left: bool) {
+    fn print_node(
+        &self,
+        node: &OptNodePtr<K, V, P>,
+        depth: usize,
+        prefix: &str,
+        is_right: bool,
+        had_left: bool,
+    ) {
         if let Some(node) = node {
-            let indent = "    ".repeat(depth);
+            let indent = " ";
             let node_prefix = if depth > 0 {
-                if is_left {
-                    "├── "
+                if is_right {
+                    if had_left {
+                        "├R"
+                    } else {
+                        "└R"
+                    }
                 } else {
-                    "└── "
+                    "└L"
                 }
             } else {
                 ""
             };
-            println!("{}{}{}", indent, node_prefix, node);
-            self.print_node(
-                &node.left,
-                depth + 1,
-                &(indent.to_owned() + if is_left { "|   " } else { "    " }),
-                true,
-            );
-            self.print_node(
-                &node.right,
-                depth + 1,
-                &(indent.to_owned() + if is_left { "|   " } else { "    " }),
-                false,
-            );
+            println!("{}{}{}{}", prefix, indent, node_prefix, node);
+            let has_left = node.left.is_some();
+            let prefix = (prefix.to_owned()
+                + &indent.to_owned()
+                + if is_right && had_left && depth > 0 {
+                    "│"
+                } else {
+                    ""
+                })
+            .to_owned();
+            self.print_node(&node.right, depth + 1, &prefix, true, has_left);
+            self.print_node(&node.left, depth + 1, &prefix, false, has_left);
         }
     }
 }
